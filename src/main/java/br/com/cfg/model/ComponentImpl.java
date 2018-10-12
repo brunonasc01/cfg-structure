@@ -1,17 +1,34 @@
 package br.com.cfg.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ComponentImpl implements Component {
 
+	private final static String LINE_BREAK = "\n";
 	private long mInstanceId;
-	private String mCompleteMetadataId;
+	private String metadataId;
 	private long mFatherInstanceId;
 	private DataTable dataTable;
 	private Map<Long,Component> subComponentMap;
 	
 	public ComponentImpl() {
+		init();
+	}
+	
+	public ComponentImpl(Map<String, String> dataMap) {
+		init();
+		dataTable.fillData(dataMap);
+	}
+	
+	protected void init(){
 		dataTable = new DataTable();
+		subComponentMap = new HashMap<>();
+//		this.metadataId = metadataId;
+		this.mInstanceId = new Random(8).nextLong();
 	}
 	
 	@Override
@@ -23,10 +40,16 @@ public class ComponentImpl implements Component {
 	public void setInstanceId(long instId) {
 		this.mInstanceId = instId;
 	}
+	
+	@Override
+	public AttributeData getAttributeData(String mnemonico) {
+		return dataTable.getAttributeValue(mnemonico);
+	}
 
 	@Override
 	public String getAttributeValue(String mnemonico) {
-		return dataTable.getAttributeValue(mnemonico);
+		AttributeData attData = dataTable.getAttributeValue(mnemonico);
+		return (attData != null)? attData.getValue() : "";
 	}
 
 	@Override
@@ -54,8 +77,12 @@ public class ComponentImpl implements Component {
 				break;
 			}
 		}
-
 		return subComponent;
+	}
+	
+	@Override
+	public List<Component> getSubComponentList() {
+		return new ArrayList<>(subComponentMap.values());
 	}
 
 	@Override
@@ -72,10 +99,33 @@ public class ComponentImpl implements Component {
 	public Component getFatherComponent(ComponentsTree aTree) {
 		return aTree.getComponentReference(mFatherInstanceId);
 	}
-
+	
 	@Override
 	public String getMetadataId() {
-		return mCompleteMetadataId;
+		return metadataId;
 	}
 
+	public void setMetadataId(String metadataId) {
+		this.metadataId = metadataId;
+	}
+	
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		
+		str.append(getMetadataId());
+
+		for(AttributeData attData : dataTable.getAttributeList()){
+			str.append(LINE_BREAK);
+			str.append(attData);
+		}
+
+		str.append(LINE_BREAK);
+		
+		for(Component subComponent : getSubComponentList()){
+			str.append(LINE_BREAK);
+			str.append(subComponent);
+		}
+		
+		return str.toString();
+	}
 }
