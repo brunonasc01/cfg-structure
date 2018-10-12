@@ -7,9 +7,9 @@ public class AttributeData {
 	
 	private String mnemonico;
 	
-	private boolean enable;
+	private boolean enable = true;
 	
-	private boolean visible;
+	private boolean visible = true;
 	
 	private List<String> domain;
 
@@ -60,6 +60,6 @@ public class AttributeData {
 	
 	@Override
 	public String toString() {
-		return "Mnemonico: "+getMnemonico()+", Value: "+getValue();
+		return "Mnemonico: "+getMnemonico()+", Value: "+getValue()+", Enable: "+isEnable()+", Visible: "+isVisible();
 	}
 }

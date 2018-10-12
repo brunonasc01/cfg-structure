@@ -27,8 +27,7 @@ public class ComponentImpl implements Component {
 	protected void init(){
 		dataTable = new DataTable();
 		subComponentMap = new HashMap<>();
-//		this.metadataId = metadataId;
-		this.mInstanceId = new Random(8).nextLong();
+		this.mInstanceId = new Random().nextInt(90000000);
 	}
 	
 	@Override
@@ -59,6 +58,7 @@ public class ComponentImpl implements Component {
 
 	@Override
 	public void insertSubComponent(Component comp) {
+		comp.setFatherInstanceId(this.getInstanceId());
 		subComponentMap.put(comp.getInstanceId(), comp);
 	}
 
